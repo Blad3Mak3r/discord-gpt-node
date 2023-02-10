@@ -33,11 +33,15 @@ export const ChatCommand: InteractionHandler = {
         })
 
         if (result.status !== 200) {
-            logger.error(`Received non 200 status code on openai request: [${result.status}] ${result.statusText}`)
-            await interaction.followUp(`Received non-success status code ${result.status}: ${result.statusText}`)
+            logger.error(interaction.id, { message: `Received non 200 status code on openai request: [${result.status}] ${result.statusText}` })
+            await interaction.followUp(`Received non-success status code ${result.status}: ${result.statusText} \n\`\`\`\n${result.data}\n\`\`\``)
             return
         }
 
-        await interaction.followUp(`> **${prompt}** - <@!${interaction.user.id}>${result.data.choices[0].text}`)
+        logger.info(interaction.id, { message: `Received response from OpenAI to prompt: ${prompt}` })
+        logger.info(interaction.id, { message: `Used tokends ${result.data.usage?.total_tokens ?? 0}` })
+        
+
+        await interaction.followUp(`> **${prompt}** - <@!${interaction.user.id}>\n\n${result.data.choices[0].text?.trimStart()?.trimEnd()}`)
     },
 }
