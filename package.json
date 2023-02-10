@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node src/main.ts",
-    "prebuild": "tsc",
-    "build": "pkg out/main.js -o bin/calvoia"
+    "dev": "ts-node src/index.ts",
+    "build": "tsc && pkg build/index.js -o bin/calvoia"
   },
   "keywords": [],
   "author": "",
