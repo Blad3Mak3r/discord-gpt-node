@@ -1,4 +1,5 @@
 import { ChatInputCommandInteraction, Client, Collection, GatewayIntentBits, Interaction } from "discord.js";
+import { cli } from "winston/lib/winston/config";
 import { InteractionHandler } from "../interfaces/interactions";
 import { logger } from "../logger";
 

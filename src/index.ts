@@ -1,21 +1,18 @@
-import express, { Application } from "express";
-import { REST, Client, GatewayIntentBits } from "discord.js";
-import { APP_HOST, APP_PORT, DISCORD_BOT_TOKEN } from "./env";
+import { DISCORD_BOT_TOKEN, OPENAI_MAX_TOKENS, OPENAI_MODEL } from "./env";
 import { logger } from "./logger";
 import { addCommand, login } from "./services/discord";
 import { ChatCommand } from "./modules/openai";
 
-if (!DISCORD_BOT_TOKEN) {
-    throw new Error("Bot token not defined.")
-}
+(async () => {
+    if (!DISCORD_BOT_TOKEN) {
+        throw new Error("Bot token not present on env variables, set DISCORD_BOT_TOKEN.")
+    }
+    
+    logger.info("Starting up Discord GPT NodeJS...")
+    logger.warn(`Selected model: ${OPENAI_MODEL}`)
+    logger.warn(`Max tokens per request: ${OPENAI_MAX_TOKENS}`)
 
-logger.info("Adding commands:")
-addCommand(ChatCommand)
-
-const app = express()
-
-app.listen(APP_PORT, APP_HOST, async () => {
-    logger.info(`Server ready at ${APP_HOST}:${APP_PORT}`)
-
-    await login(DISCORD_BOT_TOKEN!!)
-})
+    addCommand(ChatCommand)
+    
+    await login(DISCORD_BOT_TOKEN)
+})()

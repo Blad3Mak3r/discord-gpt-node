@@ -1,14 +1,15 @@
+import { MessageFlags } from "discord.js";
 import { Configuration, OpenAIApi } from "openai";
-import { OPENAI_API_KEY } from "../env";
+import { OPENAI_API_KEY, OPENAI_MAX_TOKENS, OPENAI_MODEL } from "../env";
 import { InteractionHandler } from "../interfaces/interactions";
 import { logger } from "../logger";
 
 if (!OPENAI_API_KEY) {
-    throw new Error("OpenAI API Key not defined.")
+    throw new Error("OpenAI Key not present on env variables, set OPENAI_API_KEY.")
 }
 
 const cfg = new Configuration({
-    apiKey: OPENAI_API_KEY!!
+    apiKey: OPENAI_API_KEY
 })
 
 export const client = new OpenAIApi(cfg)
@@ -19,17 +20,20 @@ export const ChatCommand: InteractionHandler = {
         const prompt = interaction.options.getString("prompt")
 
         if (!prompt) {
-            await interaction.reply("No prompt defined.")
+            await interaction.reply({
+                flags: MessageFlags.Ephemeral,
+                content: "No prompt defined."
+            })
             return
         }
 
         await interaction.deferReply()
 
         const result = await client.createCompletion({
-            user: interaction.user.id,
-            model: "text-davinci-003",
+            user: interaction.user.tag,
+            model: OPENAI_MODEL,
             prompt: prompt,
-            max_tokens: 500
+            max_tokens: OPENAI_MAX_TOKENS,
         })
 
         if (result.status !== 200) {
