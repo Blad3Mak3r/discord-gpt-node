@@ -11,7 +11,7 @@ COPY ./src /app/src
 RUN npm install \
     && npm run build
 
-FROM node:19-alpine as runetime
+FROM node:19-alpine as runtime
 
 ENV NODE_ENV=production
 
